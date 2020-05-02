@@ -13,7 +13,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       locations: [],
-      count: 0,
       position: null,
       text: "",
       intervalId: null,
@@ -22,7 +21,6 @@ class App extends React.Component {
     this.errorMessage = this.errorMessage.bind(this);
     this.renderTableData = this.renderTableData.bind(this);
     this.startTracking = this.startTracking.bind(this);
-    this.trackPosition = this.trackPosition.bind(this);
     this.getLocation = this.getLocation.bind(this);
     this.stopTracking = this.stopTracking.bind(this);
     this.handleClearHistory = this.handleClearHistory.bind(this);
@@ -34,35 +32,15 @@ class App extends React.Component {
     };
   }
 
-  trackPosition(pos) {
-    console.log("track", pos);
-    this.setState({
-      position: pos,
-      text: "",
-      locations: [...this.state.locations, pos],
-    });
-  }
-
-  startTracking(e) {
-    e.preventDefault();
-    if (this.state.intervalId === null) {
-      const intervalId = setInterval(() => {
-        this.getLocation((pos) => {
-          let lastPos = null;
-          if (this.state.locations.length > 0) {
-            lastPos = this.state.locations[this.state.locations.length - 1];
-          }
-          if (lastPos !== null && lastPos.timestamp === pos.timestamp) {
-            return;
-          }
-          this.setState({
-            position: pos,
-            text: "",
-            locations: [...this.state.locations, pos],
-          });
-        });
-      }, TRACK_FREQ);
-      this.setState({intervalId});
+  getLocation(cb) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        cb,
+        this.errorMessage,
+        this.positionOptions
+      );
+    } else {
+      this.setState({text: "unavailable"});
     }
   }
 
@@ -73,8 +51,9 @@ class App extends React.Component {
 
   stopTracking(e) {
     e.preventDefault();
-    if (this.state.intervalId !== null) {
-      clearInterval(this.state.intervalId);
+    const {intervalId} = this.state;
+    if (intervalId !== null) {
+      clearInterval(intervalId);
       this.setState({intervalId: null});
     }
   }
@@ -101,15 +80,28 @@ class App extends React.Component {
     this.setState({text});
   }
 
-  getLocation(cb) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        cb,
-        this.errorMessage,
-        this.positionOptions
-      );
-    } else {
-      this.setState({text: "unavailable"});
+  startTracking(e) {
+    e.preventDefault();
+    const {intervalId} = this.state;
+    if (intervalId === null) {
+      const interval = setInterval(() => {
+        this.getLocation((pos) => {
+          let lastPos = null;
+          const {locations} = this.state;
+          if (locations.length > 0) {
+            lastPos = locations[locations.length - 1];
+          }
+          if (lastPos !== null && lastPos.timestamp === pos.timestamp) {
+            return;
+          }
+          this.setState({
+            position: pos,
+            text: "",
+            locations: [...locations, pos],
+          });
+        });
+      }, TRACK_FREQ);
+      this.setState({intervalId: interval});
     }
   }
 
@@ -124,11 +116,12 @@ class App extends React.Component {
   }
 
   renderTableData() {
-    return this.state.locations.reverse().map((pos, index) => {
+    const {locations} = this.state;
+    return locations.reverse().map((pos) => {
       const {timestamp, coords} = pos;
       const {accuracy, longitude, latitude, altitude} = coords;
       return (
-        <tr key={index}>
+        <tr key={timestamp}>
           <td>{timestamp}</td>
           <td>{longitude}</td>
           <td>{latitude}</td>
@@ -142,7 +135,7 @@ class App extends React.Component {
   render() {
     const date = new Date();
     const {position, intervalId} = this.state;
-    let text = this.state.text;
+    let {text} = this.state;
     if (position !== null) {
       text = `current location: ${position.coords.latitude} : ${position.coords.longitude}`;
     }
