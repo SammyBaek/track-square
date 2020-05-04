@@ -7,6 +7,8 @@ import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import { simpleAction } from './actions/simpleAction';
 import GMapContainer from "./MapContainer";
 
@@ -18,6 +20,7 @@ class App extends React.Component {
       position: null,
       text: "",
       watchId: null,
+      tabKey: "home",
     };
     this.handleGetCurLocation = this.handleGetCurLocation.bind(this);
     this.errorMessage = this.errorMessage.bind(this);
@@ -133,7 +136,7 @@ class App extends React.Component {
 
   render() {
     const date = new Date();
-    const {position, watchId} = this.state;
+    const {position, watchId, tabKey} = this.state;
     let {text} = this.state;
     if (position !== null) {
       text = `current location: ${position.coords.latitude} : ${position.coords.longitude}`;
@@ -156,44 +159,64 @@ class App extends React.Component {
 
     return (
       <Container fluid>
-        <Row>
-          <Col xs={4}>{date.getTime()}</Col>
-          <Col xs={4}>
-            <Button variant="success" onClick={this.handleGetCurLocation}>
-              Get Current Location
-            </Button>
-          </Col>
-          <Col xs={4}>
-            <div>{text}</div>
-          </Col>
-        </Row>
-        <Row>
-          <Col>{trackBtn}</Col>
-          <Col>
-            <Button variant="danger" onClick={this.handleClearHistory}>
-              Clear Track History
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <GMapContainer />
-        </Row>
-        <Row>
-          <Col>
-            <Table striped bordered hover size="sm">
-              <thead>
-                <tr>
-                  <th>TIMESTAMP</th>
-                  <th>LONGITUDE</th>
-                  <th>LATITUDE</th>
-                  <th>ALTITUDE</th>
-                  <th>ACCURACY</th>
-                </tr>
-              </thead>
-              <tbody>{this.renderTableData()}</tbody>
-            </Table>
-          </Col>
-        </Row>
+
+        <Tabs
+          id="controlled-tab-example"
+          activeKey={tabKey}
+          onSelect={(k) => this.setState({tabKey: k})}
+        >
+          <Tab eventKey="home" title="Home">
+
+
+
+
+
+
+            <Row>
+              <Col xs={4}>{date.getTime()}</Col>
+              <Col xs={4}>
+                <Button variant="success" onClick={this.handleGetCurLocation}>
+                  Get Current Location
+                </Button>
+              </Col>
+              <Col xs={4}>
+                <div>{text}</div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>{trackBtn}</Col>
+              <Col>
+                <Button variant="danger" onClick={this.handleClearHistory}>
+                  Clear Track History
+                </Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Table striped bordered hover size="sm">
+                  <thead>
+                    <tr>
+                      <th>TIMESTAMP</th>
+                      <th>LONGITUDE</th>
+                      <th>LATITUDE</th>
+                      <th>ALTITUDE</th>
+                      <th>ACCURACY</th>
+                    </tr>
+                  </thead>
+                  <tbody>{this.renderTableData()}</tbody>
+                </Table>
+              </Col>
+            </Row>
+
+
+
+
+
+          </Tab>
+          <Tab eventKey="map" title="Map">
+            <GMapContainer />
+          </Tab>
+        </Tabs>
       </Container>
     );
   }
