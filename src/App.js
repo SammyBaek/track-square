@@ -5,6 +5,7 @@ import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import GMapContainer from "./MapContainer";
 
 class App extends React.Component {
   constructor(props) {
@@ -170,6 +171,9 @@ class App extends React.Component {
               Clear Track History
             </Button>
           </Col>
+        </Row>
+        <Row>
+          <GMapContainer />
         </Row>
         <Row>
           <Col>
