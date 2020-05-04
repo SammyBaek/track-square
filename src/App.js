@@ -6,8 +6,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const TRACK_FREQ = 1000;
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +13,7 @@ class App extends React.Component {
       locations: [],
       position: null,
       text: "",
-      intervalId: null,
+      watchId: null,
     };
     this.handleGetCurLocation = this.handleGetCurLocation.bind(this);
     this.errorMessage = this.errorMessage.bind(this);
@@ -51,11 +49,11 @@ class App extends React.Component {
 
   stopTracking(e) {
     e.preventDefault();
-    const {intervalId} = this.state;
-    if (intervalId !== null) {
-      clearInterval(intervalId);
-      this.setState({intervalId: null});
+    const {watchId} = this.state;
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
     }
+    this.setState({watchId: null});
   }
 
   errorMessage(error) {
@@ -82,27 +80,24 @@ class App extends React.Component {
 
   startTracking(e) {
     e.preventDefault();
-    const {intervalId} = this.state;
-    if (intervalId === null) {
-      const interval = setInterval(() => {
-        this.getLocation((pos) => {
-          let lastPos = null;
-          const {locations} = this.state;
-          if (locations.length > 0) {
-            lastPos = locations[locations.length - 1];
-          }
-          if (lastPos !== null && lastPos.timestamp === pos.timestamp) {
-            return;
-          }
-          this.setState({
-            position: pos,
-            text: "",
-            locations: [...locations, pos],
-          });
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        let lastPos = null;
+        const {locations} = this.state;
+        if (locations.length > 0) {
+          lastPos = locations[locations.length - 1];
+        }
+        if (lastPos !== null && lastPos.timestamp === pos.timestamp) {
+          return;
+        }
+        this.setState({
+          position: pos,
+          text: "",
+          locations: [...locations, pos],
         });
-      }, TRACK_FREQ);
-      this.setState({intervalId: interval});
-    }
+      }, this.errorMessage, this.positionOptions
+    );
+    this.setState({watchId});
   }
 
   handleGetCurLocation(e) {
@@ -134,14 +129,14 @@ class App extends React.Component {
 
   render() {
     const date = new Date();
-    const {position, intervalId} = this.state;
+    const {position, watchId} = this.state;
     let {text} = this.state;
     if (position !== null) {
       text = `current location: ${position.coords.latitude} : ${position.coords.longitude}`;
     }
 
     let trackBtn = null;
-    if (intervalId !== null) {
+    if (watchId !== null) {
       trackBtn = (
         <Button variant="warning" onClick={this.stopTracking}>
           Pause Tracking Location
