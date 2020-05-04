@@ -1,10 +1,13 @@
 import React from "react";
+import { connect } from 'react-redux';
+
 import "./App.css";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { simpleAction } from './actions/simpleAction';
 import GMapContainer from "./MapContainer";
 
 class App extends React.Component {
@@ -196,4 +199,13 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  ...state
+ });
+
+ const mapDispatchToProps = dispatch => ({
+  simpleAction: () => dispatch(simpleAction())
+ });
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
