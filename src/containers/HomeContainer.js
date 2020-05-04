@@ -1,26 +1,20 @@
 import React from "react";
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 
-import "./App.css";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import { simpleAction } from './actions/simpleAction';
-import GMapContainer from "./MapContainer";
+import Table from "react-bootstrap/Table";
 
-class App extends React.Component {
+class HomeContainer extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       locations: [],
       position: null,
       text: "",
       watchId: null,
-      tabKey: "home",
     };
     this.handleGetCurLocation = this.handleGetCurLocation.bind(this);
     this.errorMessage = this.errorMessage.bind(this);
@@ -35,6 +29,7 @@ class App extends React.Component {
       timeout: 5000,
       maximumAge: 0,
     };
+
   }
 
   getLocation(cb) {
@@ -134,10 +129,13 @@ class App extends React.Component {
     });
   }
 
+
   render() {
-    const date = new Date();
-    const {position, watchId, tabKey} = this.state;
+    const {position, watchId} = this.state;
     let {text} = this.state;
+
+    const date = new Date();
+
     if (position !== null) {
       text = `current location: ${position.coords.latitude} : ${position.coords.longitude}`;
     }
@@ -158,77 +156,45 @@ class App extends React.Component {
     }
 
     return (
-      <Container fluid>
-
-        <Tabs
-          id="controlled-tab-example"
-          activeKey={tabKey}
-          onSelect={(k) => this.setState({tabKey: k})}
-        >
-          <Tab eventKey="home" title="Home">
-
-
-
-
-
-
-            <Row>
-              <Col xs={4}>{date.getTime()}</Col>
-              <Col xs={4}>
-                <Button variant="success" onClick={this.handleGetCurLocation}>
-                  Get Current Location
-                </Button>
-              </Col>
-              <Col xs={4}>
-                <div>{text}</div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>{trackBtn}</Col>
-              <Col>
-                <Button variant="danger" onClick={this.handleClearHistory}>
-                  Clear Track History
-                </Button>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Table striped bordered hover size="sm">
-                  <thead>
-                    <tr>
-                      <th>TIMESTAMP</th>
-                      <th>LONGITUDE</th>
-                      <th>LATITUDE</th>
-                      <th>ALTITUDE</th>
-                      <th>ACCURACY</th>
-                    </tr>
-                  </thead>
-                  <tbody>{this.renderTableData()}</tbody>
-                </Table>
-              </Col>
-            </Row>
-
-
-
-
-
-          </Tab>
-          <Tab eventKey="map" title="Map">
-            <GMapContainer />
-          </Tab>
-        </Tabs>
-      </Container>
+      <div>
+        <Row>
+          <Col xs={4}>{date.getTime()}</Col>
+          <Col xs={4}>
+            <Button variant="success" onClick={this.handleGetCurLocation}>
+              Get Current Location
+            </Button>
+          </Col>
+          <Col xs={4}>
+            <div>{text}</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>{trackBtn}</Col>
+          <Col>
+            <Button variant="danger" onClick={this.handleClearHistory}>
+              Clear Track History
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table striped bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th>TIMESTAMP</th>
+                  <th>LONGITUDE</th>
+                  <th>LATITUDE</th>
+                  <th>ALTITUDE</th>
+                  <th>ACCURACY</th>
+                </tr>
+              </thead>
+              <tbody>{this.renderTableData()}</tbody>
+            </Table>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  ...state
- });
-
- const mapDispatchToProps = dispatch => ({
-  simpleAction: () => dispatch(simpleAction())
- });
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default HomeContainer;
