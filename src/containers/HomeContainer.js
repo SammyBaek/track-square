@@ -12,7 +12,7 @@ import {
   stopTrackingPos,
   clearTrackingPos,
   updateTrackingPos,
-  positionOptions
+  positionOptions,
 } from '../actions/simpleAction';
 
 class HomeContainer extends React.Component {
@@ -53,7 +53,7 @@ class HomeContainer extends React.Component {
         (err) => {
           console.log("error tracking", err);
         },
-        positionOptions
+        positionOptions,
       );
       startTrackingPosDisp(watchId);
     } else {
@@ -120,7 +120,7 @@ class HomeContainer extends React.Component {
 
 HomeContainer.defaultProps = {
   currentPos: null,
-  watchId: null
+  watchId: null,
 };
 
 HomeContainer.propTypes = {
@@ -146,10 +146,10 @@ const mapDispatchToProps = dispatch => ({
   startTrackingPosDisp: (watchId) => dispatch(startTrackingPos(watchId)),
   stopTrackingPosDisp: () => dispatch(stopTrackingPos()),
   clearTrackingPosDisp: () => dispatch(clearTrackingPos()),
-  updateTrackingPosDisp: (pos) => dispatch(updateTrackingPos(pos))
+  updateTrackingPosDisp: (pos) => dispatch(updateTrackingPos(pos)),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(HomeContainer);

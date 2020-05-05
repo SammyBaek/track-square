@@ -32,7 +32,7 @@ export const getCurrentPos = () => dispatch => {
   const curPosSuccess = (pos) => {
     dispatch({
       type: types.GET_CUR_POS,
-      payload: pos
+      payload: pos,
     });
   };
 
@@ -41,8 +41,8 @@ export const getCurrentPos = () => dispatch => {
       type: types.GET_CUR_POS_ERR,
       payload: {
         err,
-        errMsg: getGeoErrorMessage(err)
-      }
+        errMsg: getGeoErrorMessage(err),
+      },
     });
   }
 
@@ -50,7 +50,7 @@ export const getCurrentPos = () => dispatch => {
     navigator.geolocation.getCurrentPosition(
       curPosSuccess,
       curPosErr,
-      positionOptions
+      positionOptions,
     );
   } else {
     dispatch({
@@ -67,14 +67,14 @@ export const updateTrackingPos = (pos) => (dispatch, getState) => {
   }
   dispatch({
     type: types.UPDATE_TRACKING_POS,
-    payload: pos
+    payload: pos,
   });
 };
 
 export const startTrackingPos = (watchId) => (dispatch) => {
   dispatch({
     type: types.START_TRACKING_POS,
-    payload: watchId
+    payload: watchId,
   });
 };
 
@@ -90,6 +90,6 @@ export const stopTrackingPos = () => (dispatch, getState) => {
 
 export const clearTrackingPos = () => dispatch => {
   dispatch({
-    type: types.CLEAR_TRACKING_POS
+    type: types.CLEAR_TRACKING_POS,
   });
 };

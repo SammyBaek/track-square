@@ -31,13 +31,13 @@ export default (state=initialState, action) => {
         ...state,
         currentPos: null,
         err: action.payload.err,
-        errMsg: action.payload.errMsg
+        errMsg: action.payload.errMsg,
       };
 
     case type.START_TRACKING_POS:
       return {
         ...state,
-        watchId: action.payload
+        watchId: action.payload,
       };
 
     case type.TRACKING_POS: {
@@ -46,7 +46,7 @@ export default (state=initialState, action) => {
         ...state,
         currentPos: action.payload,
         locations: [...state.locations, action.payload],
-        pathCoords: [...state.pathCoords, {lat, lng}]
+        pathCoords: [...state.pathCoords, {lat, lng}],
       };
     }
     case type.TRACKING_POS_ERR:
@@ -54,7 +54,7 @@ export default (state=initialState, action) => {
         ...state,
         currentPos: null,
         err: action.payload.err,
-        errMsg: action.payload.errMsg
+        errMsg: action.payload.errMsg,
       };
     case type.STOP_TRACKING_POS:
       return {
@@ -73,7 +73,7 @@ export default (state=initialState, action) => {
         ...state,
         currentPos: action.payload,
         locations: [...state.locations, action.payload],
-        pathCoords: [...state.pathCoords, {lat, lng}]
+        pathCoords: [...state.pathCoords, {lat, lng}],
       };
     }
     default:

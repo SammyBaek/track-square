@@ -10,7 +10,7 @@ export class MapContainer extends React.PureComponent {
     if (currentPos !== null) {
       curLatLng = {
         lat: currentPos.coords.latitude,
-        lng: currentPos.coords.longitude
+        lng: currentPos.coords.longitude,
       }
     };
 
@@ -40,14 +40,14 @@ MapContainer.propTypes = {
 
 const mapStateToProps = state => ({
   pathCoords: state.geolocation.pathCoords,
-  currentPos: state.geolocation.currentPos
+  currentPos: state.geolocation.currentPos,
 });
 
 const WrappedContainer = GoogleApiWrapper({
-  apiKey: (process.env.REACT_APP_G_MAPS)
+  apiKey: (process.env.REACT_APP_G_MAPS),
 })(MapContainer)
 
 export default connect(
   mapStateToProps,
-  null
+  null,
 )(WrappedContainer);

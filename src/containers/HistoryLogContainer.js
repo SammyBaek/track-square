@@ -13,7 +13,7 @@ class HistoryLogContainer extends React.Component {
     super(props);
 
     this.state = {
-      numOfRows: 0
+      numOfRows: 0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -85,11 +85,11 @@ class HistoryLogContainer extends React.Component {
 }
 
 HistoryLogContainer.propTypes = {
-  locations: PropTypes.array.isRequired
+  locations: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
-  locations: state.geolocation.locations
+  locations: state.geolocation.locations,
 });
 
 export default connect(mapStateToProps, null)(HistoryLogContainer);
