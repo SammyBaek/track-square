@@ -2,8 +2,15 @@ import React from "react";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {Map, GoogleApiWrapper, Polyline, Marker} from 'google-maps-react';
+import {getCurrentPos} from "../actions/simpleAction";
 
 export class MapContainer extends React.PureComponent {
+
+  componentDidMount() {
+    const {getCurrentPosDisp} = this.props;
+    getCurrentPosDisp();
+  }
+
   render() {
     const {google, pathCoords, currentPos} = this.props;
     let curLatLng = null
@@ -18,7 +25,7 @@ export class MapContainer extends React.PureComponent {
       <Map
         google={google}
         center={curLatLng}
-        zoom={18}
+        zoom={19}
       >
         <Marker position={curLatLng} />
         <Polyline
@@ -32,15 +39,24 @@ export class MapContainer extends React.PureComponent {
   }
 }
 
+MapContainer.defaultProps = {
+  currentPos: null,
+};
+
 MapContainer.propTypes = {
+  getCurrentPosDisp: PropTypes.func.isRequired,
   google: PropTypes.object.isRequired,
   pathCoords: PropTypes.array.isRequired,
-  currentPos: PropTypes.object.isRequired,
+  currentPos: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   pathCoords: state.geolocation.pathCoords,
   currentPos: state.geolocation.currentPos,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getCurrentPosDisp: () => dispatch(getCurrentPos()),
 });
 
 const WrappedContainer = GoogleApiWrapper({
@@ -49,5 +65,5 @@ const WrappedContainer = GoogleApiWrapper({
 
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(WrappedContainer);
