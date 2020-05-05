@@ -1,119 +1,29 @@
 import React from "react";
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 
+import {
+  getCurrentPos,
+  startTrackingPos,
+  stopTrackingPos,
+  clearTrackingPos,
+  updateTrackingPos,
+  positionOptions
+} from '../actions/simpleAction';
+
 class HomeContainer extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      locations: [],
-      position: null,
-      text: "",
-      watchId: null,
-    };
-    this.handleGetCurLocation = this.handleGetCurLocation.bind(this);
-    this.errorMessage = this.errorMessage.bind(this);
-    this.renderTableData = this.renderTableData.bind(this);
-    this.startTracking = this.startTracking.bind(this);
-    this.getLocation = this.getLocation.bind(this);
-    this.stopTracking = this.stopTracking.bind(this);
-    this.handleClearHistory = this.handleClearHistory.bind(this);
-
-    this.positionOptions = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
-    };
-
+    this.handleStartTracking = this.handleStartTracking.bind(this);
+    this.updateTrackingPos = this.updateTrackingPos.bind(this);
   }
 
-  getLocation(cb) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        cb,
-        this.errorMessage,
-        this.positionOptions
-      );
-    } else {
-      this.setState({text: "unavailable"});
-    }
-  }
-
-  handleClearHistory(e) {
-    e.preventDefault();
-    this.setState({locations: []});
-  }
-
-  stopTracking(e) {
-    e.preventDefault();
-    const {watchId} = this.state;
-    if (watchId !== null) {
-      navigator.geolocation.clearWatch(watchId);
-    }
-    this.setState({watchId: null});
-  }
-
-  errorMessage(error) {
-    let text = "";
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        text = "User denied the request for Geolocation.";
-        break;
-      case error.POSITION_UNAVAILABLE:
-        text = "Location information is unavailable.";
-        break;
-      case error.TIMEOUT:
-        text = "The request to get user location timed out.";
-        break;
-      case error.UNKNOWN_ERROR:
-        text = "An unknown error occurred.";
-        break;
-      default:
-        text = "Some error has occurred during getting location.";
-        break;
-    }
-    this.setState({text});
-  }
-
-  startTracking(e) {
-    e.preventDefault();
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        let lastPos = null;
-        const {locations} = this.state;
-        if (locations.length > 0) {
-          lastPos = locations[locations.length - 1];
-        }
-        if (lastPos !== null && lastPos.timestamp === pos.timestamp) {
-          return;
-        }
-        this.setState({
-          position: pos,
-          text: "",
-          locations: [...locations, pos],
-        });
-      }, this.errorMessage, this.positionOptions
-    );
-    this.setState({watchId});
-  }
-
-  handleGetCurLocation(e) {
-    e.preventDefault();
-    this.getLocation((pos) => {
-      this.setState({
-        position: pos,
-        text: "",
-      });
-    });
-  }
-
-  renderTableData() {
-    const {locations} = this.state;
+  static renderTableData (locations) {
     return locations.reverse().map((pos) => {
       const {timestamp, coords} = pos;
       const {accuracy, longitude, latitude, altitude} = coords;
@@ -129,27 +39,56 @@ class HomeContainer extends React.Component {
     });
   }
 
+  updateTrackingPos(pos) {
+    const {updateTrackingPosDisp} = this.props;
+    updateTrackingPosDisp(pos);
+  }
+
+  handleStartTracking(e) {
+    // TODO: need to move this logic to redux (simpleAction) like the rest
+    const {startTrackingPosDisp} = this.props;
+    e.preventDefault();
+    if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(
+        this.updateTrackingPos,
+        (err) => {
+          console.log("error tracking", err);
+        },
+        positionOptions
+      );
+      startTrackingPosDisp(watchId);
+    } else {
+      console.log("geolocation unavailable");
+    }
+  }
 
   render() {
-    const {position, watchId} = this.state;
-    let {text} = this.state;
+    const {
+      getCurrentPosDisp,
+      currentPos,
+      stopTrackingPosDisp,
+      clearTrackingPosDisp,
+      watchId,
+      locations
+    } = this.props;
+    let text = "";
 
     const date = new Date();
 
-    if (position !== null) {
-      text = `current location: ${position.coords.latitude} : ${position.coords.longitude}`;
+    if (currentPos !== null) {
+      text = `current location: ${currentPos.coords.latitude} : ${currentPos.coords.longitude}`;
     }
 
     let trackBtn = null;
     if (watchId !== null) {
       trackBtn = (
-        <Button variant="warning" onClick={this.stopTracking}>
+        <Button variant="warning" onClick={stopTrackingPosDisp}>
           Pause Tracking Location
         </Button>
       );
     } else {
       trackBtn = (
-        <Button variant="primary" onClick={this.startTracking}>
+        <Button variant="primary" onClick={this.handleStartTracking}>
           Start Tracking Location
         </Button>
       );
@@ -160,7 +99,7 @@ class HomeContainer extends React.Component {
         <Row>
           <Col xs={4}>{date.getTime()}</Col>
           <Col xs={4}>
-            <Button variant="success" onClick={this.handleGetCurLocation}>
+            <Button variant="success" onClick={getCurrentPosDisp}>
               Get Current Location
             </Button>
           </Col>
@@ -171,7 +110,7 @@ class HomeContainer extends React.Component {
         <Row>
           <Col>{trackBtn}</Col>
           <Col>
-            <Button variant="danger" onClick={this.handleClearHistory}>
+            <Button variant="danger" onClick={clearTrackingPosDisp}>
               Clear Track History
             </Button>
           </Col>
@@ -188,7 +127,7 @@ class HomeContainer extends React.Component {
                   <th>ACCURACY</th>
                 </tr>
               </thead>
-              <tbody>{this.renderTableData()}</tbody>
+              <tbody>{HomeContainer.renderTableData(locations)}</tbody>
             </Table>
           </Col>
         </Row>
@@ -197,4 +136,40 @@ class HomeContainer extends React.Component {
   }
 }
 
-export default HomeContainer;
+HomeContainer.defaultProps = {
+  currentPos: null,
+  watchId: null
+};
+
+HomeContainer.propTypes = {
+  getCurrentPosDisp: PropTypes.func.isRequired,
+  startTrackingPosDisp: PropTypes.func.isRequired,
+  stopTrackingPosDisp: PropTypes.func.isRequired,
+  updateTrackingPosDisp: PropTypes.func.isRequired,
+  clearTrackingPosDisp: PropTypes.func.isRequired,
+  currentPos: PropTypes.object,
+  watchId: PropTypes.number,
+  locations: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = state => ({
+  currentPos: state.geolocation.currentPos,
+  text: state.geolocation.text,
+  watchId: state.geolocation.watchId,
+  err: state.geolocation.err,
+  errMsg: state.geolocation.errMsg,
+  locations: state.geolocation.locations,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getCurrentPosDisp: () => dispatch(getCurrentPos()),
+  startTrackingPosDisp: (watchId) => dispatch(startTrackingPos(watchId)),
+  stopTrackingPosDisp: () => dispatch(stopTrackingPos()),
+  clearTrackingPosDisp: () => dispatch(clearTrackingPos()),
+  updateTrackingPosDisp: (pos) => dispatch(updateTrackingPos(pos))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeContainer);
