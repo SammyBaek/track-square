@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
-import geolocation from './geolocation';
+import { combineReducers } from "redux";
+import geolocation from "./geolocation";
 
 export default combineReducers({
  geolocation,

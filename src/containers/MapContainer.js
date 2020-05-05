@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import {Map, GoogleApiWrapper, Polyline, Marker} from 'google-maps-react';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import {Map, GoogleApiWrapper, Polyline, Marker} from "google-maps-react";
 import {getCurrentPos} from "../actions/simpleAction";
 
 export class MapContainer extends React.PureComponent {

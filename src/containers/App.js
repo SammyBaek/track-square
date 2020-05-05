@@ -2,8 +2,8 @@ import React from "react";
 
 import "./App.css";
 import Container from "react-bootstrap/Container";
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
 import GMapContainer from "./MapContainer";
 import HomeContainer from "./HomeContainer";
 import HistoryLogContainer from "./HistoryLogContainer";

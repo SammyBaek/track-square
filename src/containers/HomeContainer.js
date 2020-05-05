@@ -1,6 +1,6 @@
 import React from "react";
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -13,7 +13,7 @@ import {
   clearTrackingPos,
   updateTrackingPos,
   positionOptions,
-} from '../actions/simpleAction';
+} from "../actions/simpleAction";
 
 class HomeContainer extends React.Component {
   constructor(props) {
