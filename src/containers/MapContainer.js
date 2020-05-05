@@ -1,48 +1,53 @@
 import React from "react";
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {Map, GoogleApiWrapper} from 'google-maps-react';
+import {Map, GoogleApiWrapper, Polyline, Marker} from 'google-maps-react';
 
-export class MapContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      curPos: {
-        lat: 40.854885,
-        lng: -88.081807
-      },
-    };
-  }
-
-  componentDidMount() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        this.setState({
-          curPos: {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          }
-        });
-      });
-    }
-  }
-
+export class MapContainer extends React.PureComponent {
   render() {
-    const {google} = this.props;
-    const {curPos} = this.state;
+    const {google, pathCoords, currentPos} = this.props;
+    let curLatLng = null
+    if (currentPos !== null) {
+      curLatLng = {
+        lat: currentPos.coords.latitude,
+        lng: currentPos.coords.longitude
+      }
+    };
+
     return (
       <Map
         google={google}
-        center={curPos}
+        center={curLatLng}
         zoom={18}
-      />
+      >
+        <Marker position={curLatLng} />
+        <Polyline
+          path={pathCoords}
+          strokeColor="#0000FF"
+          strokeOpacity={0.8}
+          strokeWeight={2}
+        />
+      </Map>
     );
   }
 }
 
 MapContainer.propTypes = {
   google: PropTypes.object.isRequired,
+  pathCoords: PropTypes.array.isRequired,
+  currentPos: PropTypes.object.isRequired,
 };
 
-export default GoogleApiWrapper({
+const mapStateToProps = state => ({
+  pathCoords: state.geolocation.pathCoords,
+  currentPos: state.geolocation.currentPos
+});
+
+const WrappedContainer = GoogleApiWrapper({
   apiKey: (process.env.REACT_APP_G_MAPS)
 })(MapContainer)
+
+export default connect(
+  mapStateToProps,
+  null
+)(WrappedContainer);

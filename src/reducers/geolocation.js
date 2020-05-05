@@ -7,6 +7,7 @@ const initialState = {
   err: null,
   errMsg: "",
   locations: [],
+  pathCoords: [],
 };
 
 export default (state=initialState, action) => {
@@ -39,12 +40,15 @@ export default (state=initialState, action) => {
         watchId: action.payload
       };
 
-    case type.TRACKING_POS:
+    case type.TRACKING_POS: {
+      const {latitude: lat, longitude: lng} = action.payload.coords;
       return {
         ...state,
         currentPos: action.payload,
-        locations: [...state.locations, action.payload]
+        locations: [...state.locations, action.payload],
+        pathCoords: [...state.pathCoords, {lat, lng}]
       };
+    }
     case type.TRACKING_POS_ERR:
       return {
         ...state,
@@ -60,14 +64,18 @@ export default (state=initialState, action) => {
     case type.CLEAR_TRACKING_POS:
       return {
         ...state,
-        locations: []
+        locations: [],
+        pathCoords: [],
       };
-    case type.UPDATE_TRACKING_POS:
+    case type.UPDATE_TRACKING_POS: {
+      const {latitude: lat, longitude: lng} = action.payload.coords;
       return {
         ...state,
         currentPos: action.payload,
-        locations: [...state.locations, action.payload]
+        locations: [...state.locations, action.payload],
+        pathCoords: [...state.pathCoords, {lat, lng}]
       };
+    }
     default:
       return state
   }
