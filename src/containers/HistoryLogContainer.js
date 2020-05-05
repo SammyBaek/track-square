@@ -5,11 +5,34 @@ import PropTypes from 'prop-types';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
-class HistoryLogContainer extends React.PureComponent {
+class HistoryLogContainer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      numOfRows: 0
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    this.setState({numOfRows: form.elements.rowsInput.value});
+  }
+
   render() {
     const {locations} = this.props;
-    const table = locations.reverse().map((pos) => {
+    const {numOfRows} = this.state;
+
+    const ind = numOfRows > 0 ? Math.max(0, locations.length - numOfRows) : 0;
+    const table = locations
+        .slice(ind, locations.length)
+        .reverse()
+        .map((pos) => {
       const {timestamp, coords} = pos;
       const {accuracy, longitude, latitude, altitude} = coords;
       return (
@@ -25,6 +48,21 @@ class HistoryLogContainer extends React.PureComponent {
 
     return (
       <div>
+        <Row>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Group as={Row} controlId="formNumOfRows">
+              <Form.Label column sm={4}>
+                Number of Rows
+              </Form.Label>
+              <Col sm={4}>
+                <Form.Control size="sm" type="number" name="rowsInput" defaultValue={numOfRows} />
+              </Col>
+              <Col sm={4}>
+                <Button variant="primary" type="submit">Update</Button>
+              </Col>
+            </Form.Group>
+          </Form>
+        </Row>
         <Row>
           <Col>
             <Table striped bordered hover size="sm">
