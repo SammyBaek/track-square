@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Table from "react-bootstrap/Table";
 
 import {
   getCurrentPos,
@@ -69,7 +68,6 @@ class HomeContainer extends React.Component {
       stopTrackingPosDisp,
       clearTrackingPosDisp,
       watchId,
-      locations
     } = this.props;
     let text = "";
 
@@ -115,22 +113,6 @@ class HomeContainer extends React.Component {
             </Button>
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <Table striped bordered hover size="sm">
-              <thead>
-                <tr>
-                  <th>TIMESTAMP</th>
-                  <th>LONGITUDE</th>
-                  <th>LATITUDE</th>
-                  <th>ALTITUDE</th>
-                  <th>ACCURACY</th>
-                </tr>
-              </thead>
-              <tbody>{HomeContainer.renderTableData(locations)}</tbody>
-            </Table>
-          </Col>
-        </Row>
       </div>
     );
   }
@@ -149,7 +131,6 @@ HomeContainer.propTypes = {
   clearTrackingPosDisp: PropTypes.func.isRequired,
   currentPos: PropTypes.object,
   watchId: PropTypes.number,
-  locations: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -158,7 +139,6 @@ const mapStateToProps = state => ({
   watchId: state.geolocation.watchId,
   err: state.geolocation.err,
   errMsg: state.geolocation.errMsg,
-  locations: state.geolocation.locations,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -6,6 +6,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import GMapContainer from "./MapContainer";
 import HomeContainer from "./HomeContainer";
+import HistoryLogContainer from "./HistoryLogContainer";
 
 class App extends React.Component {
   constructor(props) {
@@ -30,6 +31,9 @@ class App extends React.Component {
           </Tab>
           <Tab eventKey="map" title="Map">
             <GMapContainer />
+          </Tab>
+          <Tab eventKey="history" title="History">
+            <HistoryLogContainer />
           </Tab>
         </Tabs>
       </Container>
