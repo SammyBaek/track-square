@@ -20,7 +20,7 @@ class App extends React.Component {
     const {tabKey} = this.state;
 
     return (
-      <Container fluid>
+      <Container>
         <Tabs
           id="controlled-tab-example"
           activeKey={tabKey}

@@ -68,17 +68,19 @@ class HomeContainer extends React.Component {
       stopTrackingPosDisp,
       clearTrackingPosDisp,
       watchId,
+      locations,
     } = this.props;
+
     let text = "";
+    let timestamp = "";
 
-    const date = new Date();
-
-    if (currentPos !== null) {
-      text = `current location: ${currentPos.coords.latitude} : ${currentPos.coords.longitude}`;
+    if (currentPos) {
+      text = `Current Location: ${currentPos.coords.latitude} : ${currentPos.coords.longitude}`;
+      timestamp = currentPos.timestamp;
     }
 
     let trackBtn = null;
-    if (watchId !== null) {
+    if (watchId) {
       trackBtn = (
         <Button variant="warning" onClick={stopTrackingPosDisp}>
           Pause Tracking Location
@@ -92,26 +94,38 @@ class HomeContainer extends React.Component {
       );
     }
 
+    let clearBtn = null;
+    if (locations.length > 0) {
+      clearBtn = (
+        <Button variant="danger" onClick={clearTrackingPosDisp}>
+          Clear Track History
+        </Button>
+      );
+    }
+
     return (
       <div>
         <Row>
-          <Col xs={4}>{date.getTime()}</Col>
-          <Col xs={4}>
+          <Col>
+            Current Timestamp: 
+            {timestamp}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <Button variant="success" onClick={getCurrentPosDisp}>
               Get Current Location
             </Button>
           </Col>
-          <Col xs={4}>
-            <div>{text}</div>
-          </Col>
+        </Row>
+        <Row>
+          <Col>{text}</Col>
         </Row>
         <Row>
           <Col>{trackBtn}</Col>
-          <Col>
-            <Button variant="danger" onClick={clearTrackingPosDisp}>
-              Clear Track History
-            </Button>
-          </Col>
+        </Row>
+        <Row>
+          <Col>{clearBtn}</Col>
         </Row>
       </div>
     );
@@ -131,6 +145,7 @@ HomeContainer.propTypes = {
   clearTrackingPosDisp: PropTypes.func.isRequired,
   currentPos: PropTypes.object,
   watchId: PropTypes.number,
+  locations: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -139,6 +154,7 @@ const mapStateToProps = state => ({
   watchId: state.geolocation.watchId,
   err: state.geolocation.err,
   errMsg: state.geolocation.errMsg,
+  locations: state.geolocation.locations,
 });
 
 const mapDispatchToProps = dispatch => ({

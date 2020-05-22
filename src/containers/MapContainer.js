@@ -21,20 +21,27 @@ export class MapContainer extends React.PureComponent {
       }
     };
 
+    const containerStyle = {
+      position: "relative",
+      height: "80vh",
+    };
+
     return (
-      <Map
-        google={google}
-        center={curLatLng}
-        zoom={19}
-      >
-        <Marker position={curLatLng} />
-        <Polyline
-          path={pathCoords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={2}
-        />
-      </Map>
+      <div style={containerStyle}>
+        <Map
+          google={google}
+          center={curLatLng}
+          zoom={19}
+        >
+          <Marker position={curLatLng} />
+          <Polyline
+            path={pathCoords}
+            strokeColor="#0000FF"
+            strokeOpacity={0.8}
+            strokeWeight={2}
+          />
+        </Map>
+      </div>
     );
   }
 }
