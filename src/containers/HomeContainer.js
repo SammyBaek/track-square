@@ -52,13 +52,13 @@ class HomeContainer extends React.Component {
       const watchId = navigator.geolocation.watchPosition(
         this.updateTrackingPos,
         (err) => {
-          console.log("error tracking", err);
+          console.error("error tracking", err);
         },
         positionOptions,
       );
       startTrackingPosDisp(watchId);
     } else {
-      console.log("geolocation unavailable");
+      console.error("geolocation unavailable");
     }
   }
 

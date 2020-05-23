@@ -4,7 +4,7 @@ import copyGeoPos from "../utils/utils";
 
 export const positionOptions = {
   enableHighAccuracy: true,
-  timeout: 5000,
+  timeout: 9000,
   maximumAge: 0,
 };
 
@@ -98,11 +98,12 @@ export const clearTrackingPos = () => dispatch => {
 
 export const sendTrackingPos = (locations) => dispatch => {
   const data = {locations: locations.map(loc => copyGeoPos(loc))};
+  dispatch(stopTrackingPos());
   axios.post("/api/finish", data)
     .then(res => {
       dispatch({
-        type: types.SEND_TRACKING_HISTORY,
-        payload: res,
+        type: types.SEND_TRACKING_HISTORY_SUCCESS,
+        payload: res.data,
       });
     })
     .catch(err => {

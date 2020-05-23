@@ -12,7 +12,7 @@ export class MapContainer extends React.PureComponent {
   }
 
   render() {
-    const {google, pathCoords, currentPos} = this.props;
+    const {google, pathCoords, currentPos, optimizedPathCoords} = this.props;
     let curLatLng = null
     if (currentPos !== null) {
       curLatLng = {
@@ -40,6 +40,12 @@ export class MapContainer extends React.PureComponent {
             strokeOpacity={0.8}
             strokeWeight={2}
           />
+          <Polyline
+            path={optimizedPathCoords}
+            strokeColor="#00FF00"
+            strokeOpacity={0.7}
+            strokeWeight={2}
+          />
         </Map>
       </div>
     );
@@ -54,12 +60,14 @@ MapContainer.propTypes = {
   getCurrentPosDisp: PropTypes.func.isRequired,
   google: PropTypes.object.isRequired,
   pathCoords: PropTypes.array.isRequired,
+  optimizedPathCoords: PropTypes.array.isRequired,
   currentPos: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   pathCoords: state.geolocation.pathCoords,
   currentPos: state.geolocation.currentPos,
+  optimizedPathCoords: state.geolocation.optimizedPathCoords,
 });
 
 const mapDispatchToProps = dispatch => ({

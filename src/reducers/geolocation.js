@@ -8,6 +8,7 @@ const initialState = {
   errMsg: "",
   locations: [],
   pathCoords: [],
+  optimizedPathCoords: [],
 };
 
 export default (state=initialState, action) => {
@@ -74,6 +75,12 @@ export default (state=initialState, action) => {
         currentPos: action.payload,
         locations: [...state.locations, action.payload],
         pathCoords: [...state.pathCoords, {lat, lng}],
+      };
+    }
+    case type.SEND_TRACKING_HISTORY_SUCCESS: {
+      return {
+        ...state,
+        optimizedPathCoords: action.payload,
       };
     }
     default:
