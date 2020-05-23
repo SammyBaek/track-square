@@ -13,6 +13,7 @@ import {
   clearTrackingPos,
   updateTrackingPos,
   positionOptions,
+  sendTrackingPos,
 } from "../actions/simpleAction";
 
 class HomeContainer extends React.Component {
@@ -67,6 +68,7 @@ class HomeContainer extends React.Component {
       currentPos,
       stopTrackingPosDisp,
       clearTrackingPosDisp,
+      sendTrackingPosDisp,
       watchId,
       locations,
     } = this.props;
@@ -94,8 +96,14 @@ class HomeContainer extends React.Component {
       );
     }
 
+    let sendBtn = null;
     let clearBtn = null;
     if (locations.length > 0) {
+      sendBtn = (
+        <Button variant="success" onClick={() => sendTrackingPosDisp(locations)}>
+          Send Track History
+        </Button>
+      );
       clearBtn = (
         <Button variant="danger" onClick={clearTrackingPosDisp}>
           Clear Track History
@@ -125,6 +133,9 @@ class HomeContainer extends React.Component {
           <Col>{trackBtn}</Col>
         </Row>
         <Row>
+          <Col>{sendBtn}</Col>
+        </Row>
+        <Row>
           <Col>{clearBtn}</Col>
         </Row>
       </div>
@@ -143,6 +154,7 @@ HomeContainer.propTypes = {
   stopTrackingPosDisp: PropTypes.func.isRequired,
   updateTrackingPosDisp: PropTypes.func.isRequired,
   clearTrackingPosDisp: PropTypes.func.isRequired,
+  sendTrackingPosDisp: PropTypes.func.isRequired,
   currentPos: PropTypes.object,
   watchId: PropTypes.number,
   locations: PropTypes.array.isRequired,
@@ -163,6 +175,7 @@ const mapDispatchToProps = dispatch => ({
   stopTrackingPosDisp: () => dispatch(stopTrackingPos()),
   clearTrackingPosDisp: () => dispatch(clearTrackingPos()),
   updateTrackingPosDisp: (pos) => dispatch(updateTrackingPos(pos)),
+  sendTrackingPosDisp: (locations) => dispatch(sendTrackingPos(locations)),
 });
 
 export default connect(

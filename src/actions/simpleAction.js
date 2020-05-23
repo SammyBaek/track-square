@@ -1,4 +1,6 @@
+import axios from "axios";
 import * as types from "../types";
+import copyGeoPos from "../utils/utils";
 
 export const positionOptions = {
   enableHighAccuracy: true,
@@ -92,4 +94,18 @@ export const clearTrackingPos = () => dispatch => {
   dispatch({
     type: types.CLEAR_TRACKING_POS,
   });
+};
+
+export const sendTrackingPos = (locations) => dispatch => {
+  const data = {locations: locations.map(loc => copyGeoPos(loc))};
+  axios.post("/api/finish", data)
+    .then(res => {
+      dispatch({
+        type: types.SEND_TRACKING_HISTORY,
+        payload: res,
+      });
+    })
+    .catch(err => {
+      console.error("error sendTrackingPos", err);
+    });
 };
