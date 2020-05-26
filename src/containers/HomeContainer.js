@@ -81,7 +81,7 @@ class HomeContainer extends React.Component {
     let timestamp = "";
 
     if (currentPos) {
-      text = `Current Location: ${currentPos.coords.latitude} : ${currentPos.coords.longitude}`;
+      text = `Current Lat: ${currentPos.coords.latitude}   Lng: ${currentPos.coords.longitude}`;
       timestamp = currentPos.timestamp;
     }
 
