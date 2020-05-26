@@ -96,6 +96,19 @@ export const clearTrackingPos = () => dispatch => {
   });
 };
 
+export const errorToastShow = (err, errMsg) => dispatch => {
+  dispatch({
+    type: types.ERROR_TOAST_SHOW,
+    payload: {err, errMsg},
+  });
+};
+
+export const errorToastHide = () => dispatch => {
+  dispatch({
+    type: types.ERROR_TOAST_HIDE,
+  });
+};
+
 export const sendTrackingPos = (locations) => dispatch => {
   const data = {locations: locations.map(loc => copyGeoPos(loc))};
   dispatch(stopTrackingPos());
@@ -107,6 +120,7 @@ export const sendTrackingPos = (locations) => dispatch => {
       });
     })
     .catch(err => {
-      console.error("error sendTrackingPos", err);
+      const errMsg = "Error while sending tracking position";
+      dispatch(errorToastShow(err, errMsg));
     });
 };

@@ -14,6 +14,7 @@ import {
   updateTrackingPos,
   positionOptions,
   sendTrackingPos,
+  errorToastShow,
 } from "../actions/simpleAction";
 
 class HomeContainer extends React.Component {
@@ -46,19 +47,22 @@ class HomeContainer extends React.Component {
 
   handleStartTracking(e) {
     // TODO: need to move this logic to redux (simpleAction) like the rest
-    const {startTrackingPosDisp} = this.props;
+    const {startTrackingPosDisp, errorToastShowDisp} = this.props;
     e.preventDefault();
     if (navigator.geolocation) {
       const watchId = navigator.geolocation.watchPosition(
         this.updateTrackingPos,
         (err) => {
-          console.error("error tracking", err);
+          const errMsg = "Error while tracking position";
+          errorToastShowDisp(err, errMsg);
         },
         positionOptions,
       );
       startTrackingPosDisp(watchId);
     } else {
-      console.error("geolocation unavailable");
+      const err = new Error("Geolocation unavailable on this device!");
+      const errMsg = "Geolocation unavailable";
+      errorToastShowDisp(err, errMsg);
     }
   }
 
@@ -155,6 +159,7 @@ HomeContainer.propTypes = {
   updateTrackingPosDisp: PropTypes.func.isRequired,
   clearTrackingPosDisp: PropTypes.func.isRequired,
   sendTrackingPosDisp: PropTypes.func.isRequired,
+  errorToastShowDisp: PropTypes.func.isRequired,
   currentPos: PropTypes.object,
   watchId: PropTypes.number,
   locations: PropTypes.array.isRequired,
@@ -176,6 +181,7 @@ const mapDispatchToProps = dispatch => ({
   clearTrackingPosDisp: () => dispatch(clearTrackingPos()),
   updateTrackingPosDisp: (pos) => dispatch(updateTrackingPos(pos)),
   sendTrackingPosDisp: (locations) => dispatch(sendTrackingPos(locations)),
+  errorToastShowDisp: (err, errMsg) => dispatch(errorToastShow(err, errMsg)),
 });
 
 export default connect(

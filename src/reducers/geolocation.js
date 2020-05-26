@@ -83,6 +83,20 @@ export default (state=initialState, action) => {
         optimizedPathCoords: action.payload,
       };
     }
+    case type.ERROR_TOAST_SHOW: {
+      const {err, errMsg} = action.payload;
+      return {
+        ...state,
+        err,
+        errMsg,
+      };
+    };
+    case type.ERROR_TOAST_HIDE:
+      return {
+        ...state,
+        err: null,
+        errMsg: "",
+      };
     default:
       return state
   }
