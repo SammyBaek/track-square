@@ -1,0 +1,18 @@
+from flask import Flask, request, jsonify, Blueprint
+from server.geoposition import GeoPosition
+
+
+api = Blueprint('api', __name__)
+
+@api.route('/hello')
+def hello_world():
+    return 'Hello world!!'
+
+
+@api.route('/finish', methods=['POST'])
+def finish_run():
+    content = request.get_json()
+    locations_json = content.get('locations')
+    locations = [GeoPosition(loc) for loc in locations_json]
+    res = [{'lat': geo.latitude+0.0001, 'lng': geo.longitude} for geo in locations]
+    return jsonify(res)
