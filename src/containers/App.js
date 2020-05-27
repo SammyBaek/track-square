@@ -25,9 +25,9 @@ class App extends React.Component {
     const {err, errMsg, errorToastHideDisp} = this.props;
     const {tabKey} = this.state;
 
-    let errHeaderText = "";
+    let errStackTrace = "";
     if (err) {
-      errHeaderText = err.message;
+      errStackTrace = err.stack;
     }
 
     const errorToast = (
@@ -49,10 +49,10 @@ class App extends React.Component {
         >
           <Toast onClose={errorToastHideDisp} show={!!err} delay={10000} autohide>
             <Toast.Header>
-              <strong className="mr-auto">{errHeaderText}</strong>
+              <strong className="mr-auto">{errMsg}</strong>
               <small>just now</small>
             </Toast.Header>
-            <Toast.Body>{errMsg}</Toast.Body>
+            <Toast.Body>{errStackTrace}</Toast.Body>
           </Toast>
         </div>
       </div>

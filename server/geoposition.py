@@ -2,6 +2,7 @@
 Copy of HTML5 GeolocationPosition object
 """
 class GeoPosition:
+    # TODO: make this encodable to store in MongoDB
     def __init__(self, geo_position_json):
         self.timestamp = geo_position_json.get('timestamp')
 
