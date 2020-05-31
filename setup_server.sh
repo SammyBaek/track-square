@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # OTHER INSTRUCTIONS:
+# make sure to have .env file
+#
 # this is required for SSL cert
 # create public ip from ec2 (elastic public ip4)
 # setup custom resource records to the following
@@ -30,7 +32,7 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ =404;
         add_header Cache-Control "no-cache";
     }
 
