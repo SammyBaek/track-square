@@ -23,7 +23,7 @@ export class MapContainer extends React.PureComponent {
 
     const containerStyle = {
       position: "relative",
-      height: "80vh",
+      height: "90vh",
     };
 
     return (
@@ -32,6 +32,9 @@ export class MapContainer extends React.PureComponent {
           google={google}
           center={curLatLng}
           zoom={19}
+          mapTypeControl={false}
+          streetViewControl={false}
+          fullscreenControl={false}
         >
           <Marker position={curLatLng} />
           <Polyline
