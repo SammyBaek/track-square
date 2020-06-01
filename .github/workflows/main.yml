@@ -17,8 +17,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: pull latest from ec2
-    - uses: appleboy/ssh-action@master
-    - with:
+      uses: appleboy/ssh-action@master
+      with:
         key: ${{ secrets.AWS_KEY }}
         host: ${{ secrets.EC2_IP }}
         username: ubuntu
