@@ -102,7 +102,7 @@ server {
     listen 80;
     server_name tracksquare.app www.tracksquare.app;
     location ~ /.well-known {
-        root /home/ubuntu/cert;
+        root /home/ubuntu/track-square/build;
     }
     location / {
         return 301 https://$host$request_uri;
@@ -118,7 +118,7 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ =404;
         add_header Cache-Control "no-cache";
     }
 
@@ -149,7 +149,7 @@ run() {
     setupNginx
     installRepoDependencies
     startGunicorn
-    # enableSSL
+    enableSSL
 }
 
 run
