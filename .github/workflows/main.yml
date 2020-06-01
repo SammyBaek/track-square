@@ -22,7 +22,7 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: pull latest from ec2
       run: |
-        ssh ubuntu@${{ secrets.EC2_IP }} -i ${{ secrets.AWS_KEY }}
+        ssh -T ubuntu@${{ secrets.EC2_IP }} -i ${{ secrets.AWS_KEY }}
         cd track-square
         git pull
         sudo npm install -g npm@latest
