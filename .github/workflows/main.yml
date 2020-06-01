@@ -16,25 +16,26 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-
-    # Runs a set of commands using the runners shell
     - name: pull latest from ec2
-      run: |
-        ssh -T ubuntu@${{ secrets.EC2_IP }} -i ${{ secrets.AWS_KEY }}
-        cd track-square
-        git pull
-        sudo npm install -g npm@latest
-        sudo npm install
-        npm run build
-        
-        cd /home/ubuntu/track-square/server
-        python3 -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+    - uses: appleboy/ssh-action@master
+    - with:
+        key: ${{ secrets.AWS_KEY }}
+        host: ${{ secrets.EC2_IP }}
+        username: ubuntu
+        script: |
+          cd /home/ubuntu/track-square
+          git pull
+          sudo npm install -g npm@latest
+          sudo npm install
+          npm run build
 
-        sudo systemctl daemon-reload
-        sudo systemctl start track-square
-        sudo systemctl start nginx
-        sudo systemctl reload nginx
+          cd /home/ubuntu/track-square/server
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+          cd /home/ubuntu/track-square
+          sudo systemctl daemon-reload
+          sudo systemctl start track-square
+          sudo systemctl start nginx
+          sudo systemctl reload nginx
